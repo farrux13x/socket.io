@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="messagesList"></ul>
+    <div class="bottom_bar">
+        <input type="text" placeholder="Nickname" id="nicknameInput">
+        <input type="text" placeholder="Type a massage" autocomplete="off" id="messageInput">
+        <button id="sendButton">Send</button>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script>
+        const socket = io();
+        const messagesList = document.getElementById('messagesList')
+        const messagesInput = document.getElementById('messageInput')
+        const nicknameInput = document.getElementById('nicknameInput')
+
+        const sendButton = document.getElementById('sendButton')
+        sendButton.addEventListener('click', function(){
+            socket.emit('chat message', nicknameInput.value + ':' + messageInput.value)
+            messageInput.value = ''
+        })
+        socket.on('chat message', function(msg){
+            messagesList.innerHTML += `<li>${msg}</li>`
+            window.scrollTo(0, document.body.scrollHeight)
+        })
+        messagesInput.addEventListener('keyup', function(event){
+            if(event.keyCode === 13){
+                event.preventDefault();
+                sendButton.click()
+            }
+        })
+    </script>
+</body>
+</html>
